@@ -1,5 +1,8 @@
 package com.mcentric.jersey2.test;
 
+import java.util.concurrent.Future;
+
+import javax.ws.rs.client.AsyncInvoker;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.InvocationCallback;
@@ -8,13 +11,13 @@ import javax.ws.rs.core.MediaType;
 
 import org.databene.contiperf.PerfTest;
 import org.databene.contiperf.junit.ContiPerfRule;
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class TestClient {
     
@@ -36,9 +39,18 @@ public class TestClient {
         server.stop();
     }
 
+    @After
+    public void flush() throws Exception {
+        Thread.sleep(5000L);
+    }
+    
+    @Before
+    public void startup() throws Exception {
+        Thread.sleep(5000L);
+    }
 
     @Test
-    @PerfTest(duration = 60000, threads=16)
+    @PerfTest(duration = 30000, threads=16)
     public void testSync() {
         WebTarget target = client.target(TestServer.SERVER_URL).path("/list");
         String result = target
@@ -51,8 +63,8 @@ public class TestClient {
     
     
     @Test
-    @PerfTest(duration = 60000, threads=16)
-    public void testASync() {
+    @PerfTest(duration = 30000, threads=16)
+    public void testAsyncAsync() {
         WebTarget target = client.target(TestServer.SERVER_URL).path("/listAsync");
         target.request()
                 .async()
@@ -66,6 +78,20 @@ public class TestClient {
                     public void failed(Throwable throwable) {
                     }
                 });
+    }
+    
+    @Test
+    @PerfTest(duration = 30000, threads=16)
+    public void testSyncAsync() {
+        try {
+            WebTarget target = client.target(TestServer.SERVER_URL).path("/listAsync");
+            AsyncInvoker asyncInvoker = target.request().async();
+            final Future<String> responseFuture = asyncInvoker.get(String.class);
+            final String response = responseFuture.get();
+            Assert.assertEquals("1", response);
+        } catch (Exception e) {
+            
+        }
     }
 
 }

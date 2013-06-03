@@ -12,7 +12,7 @@ public class ListResource {
        @Produces("text/plain")
        public String getHello() {
            try {
-               Thread.sleep((long)Math.random()*500L);
+               Thread.sleep((long)Math.random()*1000L);
            } catch (InterruptedException e) {
 
            }
