@@ -36,7 +36,7 @@ public class AsyncListResource {
             @Override
             public void run() {
                 try {
-                    Thread.sleep((long)Math.random()*1000L);
+                    Thread.sleep(100L);
                 } catch (InterruptedException e) {
 
                 }

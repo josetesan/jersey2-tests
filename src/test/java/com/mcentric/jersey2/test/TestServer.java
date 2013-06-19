@@ -16,14 +16,12 @@ public class TestServer {
     public  static final String SERVER_URL = "http://localhost:5555";
     
 
-    public TestServer() {
-        
+    public TestServer() throws Exception {
+        ResourceConfig resourceConfig = new ResourceConfig(ListResource.class, AsyncListResource.class);
+        server = GrizzlyHttpServerFactory.createHttpServer(new URI(SERVER_URL), resourceConfig);
     }
     
     public void start() throws Exception {
-        ResourceConfig resourceConfig = new ResourceConfig(ListResource.class, AsyncListResource.class);
-        // The following line is to enable GZIP when client accepts it
-        server = GrizzlyHttpServerFactory.createHttpServer(new URI(SERVER_URL), resourceConfig);
         server.start();
     }
     

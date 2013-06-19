@@ -2,7 +2,6 @@ package com.mcentric.jersey2.test;
 
 import java.util.concurrent.Future;
 
-import javax.ws.rs.client.AsyncInvoker;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.InvocationCallback;
@@ -50,7 +49,7 @@ public class TestClient {
     }
 
     @Test
-    @PerfTest(duration = 30000, threads=16)
+    @PerfTest(duration = 20000, threads=16)
     public void testSync() {
         WebTarget target = client.target(TestServer.SERVER_URL).path("/list");
         String result = target
@@ -63,10 +62,12 @@ public class TestClient {
     
     
     @Test
-    @PerfTest(duration = 30000, threads=16)
+    @PerfTest(duration = 20000, threads=16)
     public void testAsyncAsync() {
+        try {
         WebTarget target = client.target(TestServer.SERVER_URL).path("/listAsync");
-        target.request()
+        target
+                .request()
                 .async()
                 .get(new InvocationCallback<String>() {
                     @Override
@@ -76,21 +77,27 @@ public class TestClient {
          
                     @Override
                     public void failed(Throwable throwable) {
+                        Assert.fail(throwable.getMessage());
                     }
                 });
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
     }
     
     @Test
-    @PerfTest(duration = 30000, threads=16)
+    @PerfTest(duration = 20000, threads=16)
     public void testSyncAsync() {
         try {
             WebTarget target = client.target(TestServer.SERVER_URL).path("/listAsync");
-            AsyncInvoker asyncInvoker = target.request().async();
-            final Future<String> responseFuture = asyncInvoker.get(String.class);
+            final Future<String> responseFuture =  target
+                    .request()
+                    .async()
+                    .get(String.class);
             final String response = responseFuture.get();
             Assert.assertEquals("1", response);
         } catch (Exception e) {
-            
+            Assert.fail(e.getMessage());
         }
     }
 

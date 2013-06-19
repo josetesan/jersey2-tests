@@ -9,21 +9,20 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
-
-
 repositories {
      mavenLocal()
-     mavenRepo url: "http://repo.maven.apache.org/maven2"
+     mavenCentral()
 }
 dependencies {
     compile  'javax.ws.rs:javax.ws.rs-api:2.0'
     
-    testCompile  'org.glassfish.jersey.core:jersey-server:2.0'
     testCompile 'junit:junit:4.11'
+    testCompile 'org.databene:contiperf:2.2.0'
+    testCompile 'org.glassfish.jersey.core:jersey-server:2.0'
     testCompile 'org.glassfish.jersey.containers:jersey-container-grizzly2-http:2.0'
     testCompile 'org.glassfish.jersey.containers:jersey-container-grizzly2-servlet:2.0'
     testCompile 'org.glassfish.jersey.containers:jersey-container-servlet:2.0'
-    testCompile 'org.databene:contiperf:2.2.0'
+    
     
 }
 
